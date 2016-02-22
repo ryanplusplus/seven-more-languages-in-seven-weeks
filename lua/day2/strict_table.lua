@@ -1,18 +1,4 @@
 --[[
-Write a function called concatenate(a1, a2) that takes two arrays and returns a
-new array with all the elements of a1 followed by all the elements of a2.
-]]
-
-local function concatenate(a1, a2)
-  local concatenation = {}
-  for _, v in ipairs(a1) do table.insert(concatenation, v) end
-  for _, v in ipairs(a2) do table.insert(concatenation, v) end
-  return concatenation
-end
-
-print(table.concat(concatenate({ 'a', 'b', 'c' }, { 1, 2, 3 }), ', '))
-
---[[
 Our strict table implementation in Reading and Writing, on page 19 doesn't
 provide a way to delete items from the table. If we try the usual approach,
 treasure.gold = nil, we get a duplicate key error. Modify strict_write() to allow
