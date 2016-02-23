@@ -59,4 +59,33 @@ local function play(s)
   midi_send(NOTE_UP, parsed.note, VELOCITY)
 end
 
-return { play = play }
+local function part(t)
+  scheduler.schedule(0.0, coroutine.create(function()
+    for i = 1, #t do
+      play(t[i])
+    end
+  end))
+end
+
+local function set_tempo(bpm)
+  tempo = bpm
+end
+
+local function go()
+  scheduler.run()
+end
+
+local mt = {
+  __index = function(t, s)
+    local result = s
+    return result or rawget(t, s)
+  end
+}
+
+setmetatable(_G, mt)
+
+return {
+  set_tempo = set_tempo,
+  part = part,
+  play = go
+}
