@@ -16,7 +16,7 @@ local function note(letter, octave)
     B = 11
   }
 
-  return (octave + 1) * #notes + notes[letter]
+  return (octave + 1) * 12 + notes[letter]
 end
 
 local tempo = 100
