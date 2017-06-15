@@ -1,4 +1,6 @@
 cmake_minimum_required (VERSION 2.8)
+include_directories(~/.lenv/current/include/ /usr/include/rtmidi)
+link_directories(~/.lenv/current/lib/)
 project (play)
 add_executable (play play.cpp)
-target_link_libraries (play lua rtmidi)
+target_link_libraries (play lua rtmidi dl)
