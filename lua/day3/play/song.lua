@@ -35,7 +35,7 @@ local function duration(value)
 end
 
 local function parse(s)
-  local letter, octave, value = s:match('([A-Gs]+)(%d+)(%a+)')
+  local letter, octave, value, volume = s:match('([A-Gs]+)(%d+)(%a+)(%d?)')
 
   if not (letter and octave and value) then
     return nil
@@ -43,26 +43,35 @@ local function parse(s)
 
   return {
     note = note(letter, octave),
-    duration = duration(value)
+    duration = duration(value),
+    volume = tonumber(volume) or 9
   }
 end
 
 local NOTE_DOWN = 0x90
 local NOTE_UP = 0x80
 local VELOCITY = 0x7F
+local VOLUME = 0x07
+local INSTRUMENT_0 = 0xB0
 
-local function play(s)
+local function play(s, port)
   local parsed = parse(s)
 
-  midi_send(NOTE_DOWN, parsed.note, VELOCITY)
+  midi_send(INSTRUMENT_0, VOLUME, parsed.volume * 10, port)
+  midi_send(NOTE_DOWN, parsed.note, VELOCITY, port)
   scheduler.wait(parsed.duration)
-  midi_send(NOTE_UP, parsed.note, VELOCITY)
+  midi_send(NOTE_UP, parsed.note, VELOCITY, port)
 end
 
-local function part(t)
+local function part(port, t)
+  if not t then
+    t = port
+    port = 1
+  end
+
   scheduler.schedule(0.0, coroutine.create(function()
     for i = 1, #t do
-      play(t[i])
+      play(t[i], port)
     end
   end))
 end
